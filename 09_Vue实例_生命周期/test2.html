@@ -22,10 +22,9 @@
   created()/mounted(): 发送ajax请求, 启动定时器等异步任务
   beforeDestory(): 做收尾工作, 如: 清除定时器
 -->
-
 <div id="test">
   <button @click="destoryVM">destory vue</button>
-  <p v-show="isShow">Vue 生命周期</p>
+  <p v-show="isShow" ref="content">Vue 生命周期 {{isShow ? 'show...' : 'hide...'}}</p>
 </div>
 
 <script type="text/javascript" src="../js/vue.js"></script>
@@ -37,17 +36,40 @@
         isShow: true
       }
     },
-    // 在第一次显示之后执行
+
+    beforeCreate() {
+      console.log('beforeCreate()', this.isShow);
+    },
+
+    // 实现数据代码： 后面可以通过vm 读取data 中的数据
+    created() {
+      console.log('created()');
+    },
+
+    // 在第一次显示之后在显示
     mounted() {
+      console.log('mounted()');
       this.intervalId = setInterval(() =>{
-        console.log('----');
+        console.log('-----');
         this.isShow = !this.isShow;
       },1000);
     },
+    beforeUpdate() { // 读取是老的界面
+      console.log('beforeUpdate()',this.isShow, this.$refs.content.innerHTML)
+    },
 
-    // 在销毁之前执行一次
+    updated() {
+      console.log('updated()',this.isShow, this.$refs.content.innerHTML);
+    },
+
+    // 销毁之前执行一次
     beforeDestroy() {
+      console.log('beforeDestroy()');
       clearInterval(this.intervalId);
+    },
+
+    destroyed() {
+      console.log('destroyed()');
     },
 
     methods: {
